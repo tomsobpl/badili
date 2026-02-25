@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package gelfapi.v1;
+option go_package = "github.com/tomsobpl/badili/api/gelfapi/v1;gelfapi";
+
+import "google/protobuf/struct.proto";
+
+service MessageService {
+  rpc StreamMessageBatch(stream MessageBatch) returns (MessageBatchSummary) {}
+}
+
+message Message {
+  string version = 1;
+  string host = 2;
+  string short_message = 3;
+  string full_message = 4;
+  double timestamp = 5;
+  int32 level = 6;
+  google.protobuf.Struct extras = 7;
+}
+
+message MessageBatch {
+  repeated Message messages = 1;
+}
+
+message MessageBatchSummary {
+  int64 total_messages_received = 1;
+}

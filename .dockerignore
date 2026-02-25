@@ -1,0 +1,24 @@
+# Git version control
+.git
+
+# IDE configuration
+.idea
+
+# Local development tools and artifacts
+.go-version
+*.log
+
+# Documentation
+docs
+AGENTS.md
+README.md
+
+# Examples and non-app code
+examples
+
+# Docker-related files that shouldn't be in the context
+Dockerfile
+.dockerignore
+
+# General OS files
+.DS_Store

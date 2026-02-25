@@ -1,0 +1,10 @@
+[project]
+name = "gelf-packets-producer"
+version = "0.1.0"
+description = "Simple GELF producer"
+authors = ["Tomasz Sobczak <ictslabs@gmail.com>"]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pygelf>=0.4.3",
+]

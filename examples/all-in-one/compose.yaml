@@ -1,0 +1,64 @@
+services:
+  badili:
+    build:
+      context: ../../
+    container_name: badili
+
+  gelf_producer:
+    build:
+      context: ../gelf-producer
+    container_name: gelf_producer
+    depends_on:
+      - badili
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GELF_LOG_LEVEL=DEBUG
+      - GELF_TARGET_HOST=badili
+      - GELF_TARGET_PORT=12201
+
+  # Uptrace: The main application UI and OTLP receiver
+  uptrace:
+    image: uptrace/uptrace:latest
+    container_name: uptrace
+    depends_on:
+      uptrace_clickhouse:
+        condition: service_healthy
+      uptrace_postgres:
+        condition: service_healthy
+    ports:
+      - "14318:80" # Uptrace Web UI
+    volumes:
+      - ./uptrace.yaml:/etc/uptrace/config.yml
+
+  # ClickHouse: The high-speed database for logs and traces
+  uptrace_clickhouse:
+    image: clickhouse/clickhouse-server:latest-alpine
+    container_name: uptrace-clickhouse
+    environment:
+      - CLICKHOUSE_USER=uptrace
+      - CLICKHOUSE_PASSWORD=uptrace
+      - CLICKHOUSE_DB=uptrace
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL: Stores Uptrace metadata (projects, users, etc.)
+  uptrace_postgres:
+    image: postgres:18-alpine
+    container_name: uptrace-postgres
+    environment:
+      - POSTGRES_USER=uptrace
+      - POSTGRES_PASSWORD=uptrace
+      - POSTGRES_DB=uptrace
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U uptrace"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis: Used for caching and session management
+  uptrace_redis:
+    image: redis:8-alpine
+    container_name: uptrace-redis
