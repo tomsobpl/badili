@@ -1,9 +1,13 @@
+// Copyright 2026 Tomasz Sobczak <ictslabs@gmail.com>
+// SPDX-License-Identifier: Apache-2.0
+
 package otlp
 
 import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 	"sync"
 	"time"
 
@@ -66,7 +70,7 @@ func runWorker(ctx context.Context, id int, messages <-chan *gelfapi.Message, lo
 		if m.Extras != nil {
 			for key, value := range m.Extras.Fields {
 				attrs = append(attrs, otellog.KeyValue{
-					Key:   fmt.Sprintf("app.extra.%s", key),
+					Key:   fmt.Sprintf("app.extra.%s", strings.TrimPrefix(key, "_")),
 					Value: protoValueToOtelValue(value),
 				})
 			}

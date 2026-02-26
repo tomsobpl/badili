@@ -61,6 +61,6 @@ searchable and structured.
 | `full_message`  | `attributes["exception.stacktrace"]` | Often used for stack traces in GELF; mapped to OTel attributes               |
 | `timestamp`     | `Timestamp`                          | Converted from Unix Epoch (seconds) to OTel Nanoseconds                      |
 | `level`         | `SeverityNumber`                     | **Mapped 0-7:** (e.g., GELF 3 [Error] → OTel 17 [Error])                     |
-| `_user_id`      | `attributes["app.extra._user_id"]`   | All custom `_` fields are stripped of the underscore and added as attributes |
+| `_user_id`      | `attributes["app.extra.user_id"]`    | All custom `_` fields are stripped of the underscore and added as attributes |
 
 ## Contributing
