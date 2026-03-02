@@ -11,8 +11,8 @@ import (
 	"sync"
 	"syscall"
 
-	exporters "github.com/tomsobpl/badili/internal/exporters/otlp"
-	listeners "github.com/tomsobpl/badili/internal/listeners/gelf"
+	exporter "github.com/tomsobpl/badili/internal/exporter/otlp"
+	listener "github.com/tomsobpl/badili/internal/listener/gelf"
 	"github.com/tomsobpl/badili/internal/logging"
 	"github.com/tomsobpl/badili/internal/platform/telemetry"
 )
@@ -33,29 +33,25 @@ func main() {
 	osSignalChan := make(chan os.Signal, 1)
 	signal.Notify(osSignalChan, syscall.SIGINT, syscall.SIGTERM)
 
-	var listenersWaitGroup sync.WaitGroup
-	var exportersWaitGroup sync.WaitGroup
+	var listenerWaitGroup sync.WaitGroup
+	var exporterWaitGroup sync.WaitGroup
 
-	// start listener components
-	for i := 0; i < 1; i++ {
-		listenersWaitGroup.Add(1)
-		go listeners.StartUdpListenerSupervisor(ctx, 12201, &listenersWaitGroup)
-	}
+	// start listener component
+	listenerWaitGroup.Add(1)
+	go listener.StartUdpListenerSupervisor(ctx, 12201, &listenerWaitGroup)
 
-	// start exporter components
-	for i := 0; i < 1; i++ {
-		exportersWaitGroup.Add(1)
-		go exporters.StartExporterSupervisor(ctx, 50051, &exportersWaitGroup)
-	}
+	// start exporter component
+	exporterWaitGroup.Add(1)
+	go exporter.StartExporterSupervisor(ctx, 50051, &exporterWaitGroup)
 
 	// wait for OS interrupts
 	<-osSignalChan
 	slog.InfoContext(ctx, "shutdown signal received, exiting")
 
 	// trigger shutdown sequence
-	cancel()                  // start shutdown procedure
-	listenersWaitGroup.Wait() // wait for listeners shutdown
-	exportersWaitGroup.Wait() // wait for exporters shutdown
+	cancel()                 // start shutdown procedure
+	listenerWaitGroup.Wait() // wait for listener shutdown
+	exporterWaitGroup.Wait() // wait for exporter shutdown
 
 	slog.InfoContext(ctx, "shutdown complete")
 }
