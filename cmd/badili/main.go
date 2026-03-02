@@ -11,6 +11,7 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/tomsobpl/badili/internal/config"
 	exporter "github.com/tomsobpl/badili/internal/exporter/otlp"
 	listener "github.com/tomsobpl/badili/internal/listener/gelf"
 	"github.com/tomsobpl/badili/internal/logging"
@@ -26,23 +27,35 @@ func main() {
 	// setup signal handling
 	ctx, cancel := context.WithCancel(context.Background())
 
-	// main telemetry span
-	//ctx, span := telemetry.Tracer().Start(ctx, "Main")
-	//defer span.End()
-
 	osSignalChan := make(chan os.Signal, 1)
 	signal.Notify(osSignalChan, syscall.SIGINT, syscall.SIGTERM)
+
+	// init configuration
+	_c, span := telemetry.Tracer().Start(ctx, "InitConfiguration")
+	cfg, err := config.InitConfiguration(_c)
+
+	if err != nil {
+		slog.Error(err.Error())
+		os.Exit(1)
+	}
+
+	slog.DebugContext(ctx, "configuration loaded", "cfg", cfg)
+	span.End()
 
 	var listenerWaitGroup sync.WaitGroup
 	var exporterWaitGroup sync.WaitGroup
 
 	// start listener component
-	listenerWaitGroup.Add(1)
-	go listener.StartUdpListenerSupervisor(ctx, 12201, &listenerWaitGroup)
+	if cfg.Listener.Enabled {
+		listenerWaitGroup.Add(1)
+		go listener.StartUdpListenerSupervisor(ctx, cfg.Listener, &listenerWaitGroup)
+	}
 
 	// start exporter component
-	exporterWaitGroup.Add(1)
-	go exporter.StartExporterSupervisor(ctx, 50051, &exporterWaitGroup)
+	if cfg.Exporter.Enabled {
+		exporterWaitGroup.Add(1)
+		go exporter.StartExporterSupervisor(ctx, cfg.Exporter.Port, &exporterWaitGroup)
+	}
 
 	// wait for OS interrupts
 	<-osSignalChan

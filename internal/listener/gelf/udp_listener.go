@@ -11,9 +11,11 @@ import (
 	"net"
 	"sync"
 	"time"
+
+	"github.com/tomsobpl/badili/internal/config"
 )
 
-func StartUdpListenerSupervisor(ctx context.Context, port int, wg *sync.WaitGroup) {
+func StartUdpListenerSupervisor(ctx context.Context, cfg config.ListenerConfig, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	packetsChan := make(chan Packet, 1024)
@@ -27,15 +29,15 @@ func StartUdpListenerSupervisor(ctx context.Context, port int, wg *sync.WaitGrou
 	}
 
 	for {
-		slog.InfoContext(ctx, "Starting UdpListener", "port", port)
+		slog.InfoContext(ctx, "Starting UdpListener", "port", cfg.Port)
 
-		err := runUdpListener(ctx, port, packetsChan)
+		err := runUdpListener(ctx, cfg.Port, packetsChan)
 
 		if err == nil {
 			break
 		}
 
-		slog.WarnContext(ctx, "UdpListener failed. Restarting in 5s ...", "port", port, "err", err)
+		slog.WarnContext(ctx, "UdpListener failed. Restarting in 5s ...", "port", cfg.Port, "err", err)
 		time.Sleep(5 * time.Second)
 	}
 
