@@ -14,7 +14,7 @@ import (
 	exporter "github.com/tomsobpl/badili/internal/exporter/otlp"
 	listener "github.com/tomsobpl/badili/internal/listener/gelf"
 	"github.com/tomsobpl/badili/internal/logging"
-	"github.com/tomsobpl/badili/internal/platform/telemetry"
+	"github.com/tomsobpl/badili/internal/telemetry"
 )
 
 func init() {

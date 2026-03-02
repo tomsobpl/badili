@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/tomsobpl/badili/api/gelfapi/v1"
-	"github.com/tomsobpl/badili/internal/platform/telemetry"
+	"github.com/tomsobpl/badili/internal/telemetry"
 	otellog "go.opentelemetry.io/otel/log"
 	sdklog "go.opentelemetry.io/otel/sdk/log"
 	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"

@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"github.com/tomsobpl/badili/api/gelfapi/v1"
-	"github.com/tomsobpl/badili/internal/platform/telemetry"
+	"github.com/tomsobpl/badili/internal/telemetry"
 )
 
 func PackagerWorker(ctx context.Context, id int, chunks <-chan *gelfapi.Chunk, wg *sync.WaitGroup) {

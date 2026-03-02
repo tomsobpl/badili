@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/tomsobpl/badili/internal/grpcapi"
-	"github.com/tomsobpl/badili/internal/platform/telemetry"
+	"github.com/tomsobpl/badili/internal/telemetry"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"

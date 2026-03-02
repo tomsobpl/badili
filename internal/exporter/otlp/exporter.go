@@ -14,7 +14,7 @@ import (
 
 	"github.com/tomsobpl/badili/api/gelfapi/v1"
 	"github.com/tomsobpl/badili/internal/grpcapi"
-	"github.com/tomsobpl/badili/internal/platform/telemetry"
+	"github.com/tomsobpl/badili/internal/telemetry"
 	sdklog "go.opentelemetry.io/otel/sdk/log"
 	"google.golang.org/grpc"
 )
