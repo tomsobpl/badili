@@ -59,3 +59,10 @@ UDP:12201 → Listener → (gRPC) → Processor → (gRPC) → Exporter → OTLP
 - Services must be stateless where possible.
 - Graceful shutdown via `context.WithCancel` + `sync.WaitGroup`.
 - Error handling: "Return Early" pattern; wrap errors with context using `fmt.Errorf("component: action: %w", err)`.
+
+## Repository rules
+
+- Always use Conventional Commits messages
+- Always format commits descriptions with Markdown
+- Keep commits descriptions clean and short, stick to the facts only
+- Do not add any boilerplate about agent usage and coauthoring
