@@ -12,5 +12,5 @@ const (
 	ListenerPortDefault    int    = 12201
 	ListenerTypeDefault    string = "udp"
 
-	PackagerEnabledDefault bool = true
+	ProcessorEnabledDefault bool = true
 )

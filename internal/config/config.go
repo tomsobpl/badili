@@ -25,14 +25,14 @@ type ListenerConfig struct {
 	Type    string `mapstructure:"type"`
 }
 
-type PackagerConfig struct {
+type ProcessorConfig struct {
 	Enabled bool `mapstructure:"enabled"`
 }
 
 type Config struct {
-	Exporter ExporterConfig `mapstructure:"exporter"`
-	Listener ListenerConfig `mapstructure:"listener"`
-	Packager PackagerConfig `mapstructure:"packager"`
+	Exporter  ExporterConfig  `mapstructure:"exporter"`
+	Listener  ListenerConfig  `mapstructure:"listener"`
+	Processor ProcessorConfig `mapstructure:"processor"`
 }
 
 func load(ctx context.Context) (*Config, error) {
@@ -55,7 +55,7 @@ func load(ctx context.Context) (*Config, error) {
 	v.SetDefault("listener.port", ListenerPortDefault)
 	v.SetDefault("listener.type", ListenerTypeDefault)
 
-	v.SetDefault("packager.enabled", PackagerEnabledDefault)
+	v.SetDefault("processor.enabled", ProcessorEnabledDefault)
 
 	if err := v.ReadInConfig(); err != nil {
 		var configFileNotFoundError viper.ConfigFileNotFoundError

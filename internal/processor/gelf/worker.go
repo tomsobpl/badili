@@ -12,14 +12,14 @@ import (
 	"github.com/tomsobpl/badili/internal/telemetry"
 )
 
-func PackagerWorker(ctx context.Context, id int, chunks <-chan *gelfapi.Chunk, wg *sync.WaitGroup) {
+func ProcessorWorker(ctx context.Context, id int, chunks <-chan *gelfapi.Chunk, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	l := slog.With("worker_id", id)
-	l.InfoContext(ctx, "PackagerWorker started")
+	l.InfoContext(ctx, "ProcessorWorker started")
 
 	for c := range chunks {
-		localCtx, span := telemetry.Tracer().Start(ctx, "PackagerWorker")
+		localCtx, span := telemetry.Tracer().Start(ctx, "ProcessorWorker")
 
 		l.InfoContext(localCtx, "Processing GELF chunk",
 			"messageId", c.MessageId,
@@ -31,5 +31,5 @@ func PackagerWorker(ctx context.Context, id int, chunks <-chan *gelfapi.Chunk, w
 		span.End()
 	}
 
-	l.InfoContext(ctx, "PackagerWorker shutdown complete")
+	l.InfoContext(ctx, "ProcessorWorker shutdown complete")
 }

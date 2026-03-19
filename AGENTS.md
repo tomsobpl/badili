@@ -2,7 +2,7 @@
 
 ## Project vision
 **Badili** is a high-throughput GELF-to-OTel pipeline. It is architected as 
-three distinct microservices (listener, packager, exporter) connected via gRPC
+three distinct microservices (listener, processor, exporter) connected via gRPC
 and serialized with Protocol Buffers.
 
 ## Core architectural rules
@@ -19,7 +19,7 @@ and serialized with Protocol Buffers.
 - `internal/`: Private application code.
     - `exporters`: Forwards data to OTel collectors.
     - `listeners`: Ingests GELF (UDP/TCP/HTTP).
-    - `packagers`: Batches and transforms chunks into messages.
+    - `processors`: Batches and transforms chunks into messages.
 
 ## Coding standards for AI agents
 ### Concurrency and scaling
@@ -34,7 +34,7 @@ and serialized with Protocol Buffers.
 
 ### Error handling
 - Use the "Return Early" pattern.
-- Wrap errors with context: `fmt.Errorf("packager: failed to decode msgpack: %w", err)`.
+- Wrap errors with context: `fmt.Errorf("processor: failed to decode msgpack: %w", err)`.
 
 ## Tooling constraints
 - **Go Version:** 1.21+
